@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{021ad580-44dc-4988-a34a-52811e14e264}</ProjectGuid>
-    <RootNamespace>lab2b</RootNamespace>
+    <ProjectGuid>{2df041e4-9e8a-49a9-a606-d4bc03ddae5c}</ProjectGuid>
+    <RootNamespace>lab1b</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,7 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lab2b.cpp" />
+    <ClCompile Include="FileLogger.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileLogger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
