@@ -4,25 +4,23 @@
 class MyString : public std::string
 {
 private:
-    const char *_str;
 
 public:
-    MyString(const char* str = "MyString")
+    MyString(const char* str = "MyString") : std::string(str)
     {
         std::cout << "MyString constructor called" << std::endl;
-        _str = str;
     }
     ~MyString()
     {
         std::cout << "MyString destructor called" << std::endl;
     }
 
-    const char* GetValue() const { return _str; }
+    //const char* GetValue() const { return _str; }
 };
 
 std::ostream& operator<<(std::ostream& out, const MyString& rhs)
 {
-    out << "MyString:" << rhs.GetValue() << std::endl;
+    out << "MyString:" << rhs.data() << std::endl;
     return out;
 }
 
