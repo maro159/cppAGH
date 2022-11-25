@@ -1,6 +1,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <memory>
+
 
 using namespace std;
 
@@ -13,16 +15,16 @@ class IGate
 
 };
 
-class Gate : IGate
+class Gate : public IGate
 {
 private:
     map<int, int> &m_nodes;
 public:
     Gate(map<int, int>& nodes) : m_nodes(nodes) {}
-    map<int, int> &getNodes() const { return m_nodes; }
+    map<int, int> &getNodes() { return m_nodes; }
 };
 
-class AndGate : Gate
+class AndGate : public Gate
 {
 private:
     int m_inA;
@@ -56,11 +58,11 @@ public:
 
     void print() const
     {
-        cout << "AND\t" << m_inA << "\t" << m_inB << "\t" << m_out;
+        cout << "AND\t" << "WE: " << m_inA << "\t" << "WE: " << m_inB << "\t" << "WY: " << m_out << endl;
     }
 };
 
-class OrGate : Gate
+class OrGate : public Gate
 {
 private:
     int m_inA;
@@ -94,11 +96,11 @@ public:
 
     void print() const
     {
-        cout << "OR\t" << m_inA << "\t" << m_inB << "\t" << m_out;
+        cout << "OR\t" << "WE: " << m_inA << "\t" << "WE: " << m_inB << "\t" << "WY: " << m_out << endl;
     }
 };
 
-class XorGate : Gate
+class XorGate : public Gate
 {
 private:
     int m_inA;
@@ -132,11 +134,11 @@ public:
 
     void print() const
     {
-        cout << "XOR\t" << m_inA << "\t" << m_inB << "\t" << m_out;
+        cout << "XOR\t" << "WE: " << m_inA << "\t" << "WE: " << m_inB << "\t" << "WY: " << m_out << endl;
     }
 };
 
-class NotGate : Gate
+class NotGate : public Gate
 {
 private:
     int m_inA;
@@ -160,34 +162,40 @@ public:
 
     void print() const
     {
-        cout << "AND\t" << m_inA << "\t" << m_out;
+        cout << "NOT\t" << "WE: " << m_inA << "\t" << "WY: " << m_out << endl;
     }
 };
 
 void printNodes(const map<int, int>& nodes)
 {
-    cout << "node\tstate" << endl;
+    cout << "\nnode\tstate" << endl;
     for (pair node : nodes)
     {  
-        cout << node.first << '\t' << node.second;
+        cout << node.first << '\t' << node.second << endl;
     }
 }
 
 int main()
 {
+    setlocale(LC_ALL, "pl_PL"); setlocale(LC_ALL, "polish");
+
 
     vector< unique_ptr<Gate> > gates;
     map<int, int> nodes;
-    while (1)
+    while (1) // wprowadzanie bramki
     {
+        int a;
+        int b;
+        int out;
         string type;
-        cout << "Wprowadz typ bramki:\t";
+        cout << "WprowadŸ typ bramki:\t";
         cin >> type;
         if (type == "end") { break; }
+
+
         else if (type == "and" || type == "or" || type == "xor")
         {
-            int a;
-            int b;
+
             cout << "\nWprowadz indeks pierwszego wejscia:\t";
             cin >> a;
             cout << "\nWprowadz indeks drugiego wejscia:\t";
@@ -195,20 +203,61 @@ int main()
         }
         else if (type == "not")
         {
-            int a;
             cout << "\nWprowadz indeks wejscia:\t";
             cin >> a;
         }
-        int out;
         cout << "\nWprowadz indeks wyjscia bramki:\t";
         cin >> out;
         if (type == "and")
         {
-            gates.emplace_back(make_unique<AndGate>(a, b, out, nodes))
+            gates.emplace_back(make_unique<AndGate>(a, b, out, nodes));
         }
-        
+        else if (type == "or")
+        {
+            gates.emplace_back(make_unique<OrGate>(a, b, out, nodes));
+        }
+        else if (type == "xor")
+        {
+            gates.emplace_back(make_unique<XorGate>(a, b, out, nodes));
+        }
+        else if (type == "not")
+        {
+            gates.emplace_back(make_unique<NotGate>(a, out, nodes));
+        }
 
+        nodes[a] = -1;
+        if (type != "not") nodes[b] = -1;
+        nodes[out] = -1;
     }
     
+    while (1)
+    {
+        int node= -1;
+        int state = -1;
+        cout << "Wprowadz indeks wêz³a:\t";
+        cin >> node;
+
+        if (node == -1) break;
+        else
+        {
+            cout << "Wprowadz stan wêz³a" << node << " ->\t";
+            cin >> state;
+        }
+        nodes[node] = state;
+    }
+
+    int status;
+    do
+    {
+        status = 0;
+        cout << endl;
+        for (auto& gate : gates)
+        {
+            if (gate->evaluate() == -1) status = -1;
+            gate->print();
+        }
+    } while (status != 0);
+
+    printNodes(nodes);
 }
 
